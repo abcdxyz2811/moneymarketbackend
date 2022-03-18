@@ -18,8 +18,6 @@ app.listen(PORT, () => {
 });
 
 
-
-
 // National Stock Exchange (NSE) APIS
 
 // Get the stock market status (open/closed) - JSON

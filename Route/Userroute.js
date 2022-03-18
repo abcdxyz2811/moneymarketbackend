@@ -5,6 +5,10 @@ const jwt = require("jsonwebtoken")
 const express = require("express")
 const TOKEN_KEY = "tokenpassinusershowdataandshowmassage";
 const route = express.Router()
+const {OAuth2Client} = require('google-auth-library');
+
+
+const client = new OAuth2Client("728916457886-1j3jf5e4rrsh0vktr6eudicca4tjm7pd.apps.googleusercontent.com", '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', 'http://localhost:3000/');
 
 route.post('/signuser', async (req, res) => {
   try {
@@ -51,6 +55,41 @@ route.post('/signuser', async (req, res) => {
   }
 })
 
+
+route.post("/googlelogin", async (req, res) => {
+  try {
+
+      const { token } = req.body
+      console.log("token----------->", token)
+      //  console.log("userObj----------->",userObj)
+      console.log("client--------->", client)
+      const ticket = await client.verifyIdToken({
+        idtoken: token.id_token,
+          audience: "728916457886-1j3jf5e4rrsh0vktr6eudicca4tjm7pd.apps.googleusercontent.com"
+      });
+      console.log("ticket-------->", ticket);
+      // console.log("clieny id-------->", client._clientId);
+      // const { name, email, picture } = ticket.getPayload();
+    const payload=ticket.getPayload()
+    console.log("payload",payload)
+const adduser=await user.create({username,email,token})
+      // const adduser = await users.create({username:name, email:email, password, cpassword,login_date,img:"",logout_date:"",role:"users",online:true, picture,token});
+
+      // const { name, email, picture } = ticket.getPayload();
+      // const user = await usersave.create({
+      //     email, username: name, password: "", c_password: "", picture
+      // })
+      adduser.save()
+
+      console.log("adduser-----------> ", adduser);
+      // req.session.userId = user.id
+      // res.status(201)
+     return res.json()
+
+  } catch (error) {
+      console.log(error);
+  }
+})
 
 route.post('/loginuser', async (req, res) => {
   let { email, password } = req.body
